@@ -15,4 +15,4 @@ import { ProjectsModule } from './projects/projects.module';
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

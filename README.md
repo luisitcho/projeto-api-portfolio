@@ -1,98 +1,193 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Portfolio API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Uma API REST desenvolvida em **NestJS** e **TypeScript** criada com o objetivo de centralizar as informações de projetos desenvolvidos. 
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Esta API serve como uma **fonte única de verdade** (Single Source of Truth) para alimentar dinamicamente a seção de projetos de múltiplos frontends do mesmo ecossistema, como o site **Portfolio** e o site **Ozyris**.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Sumário
+- [Por que esta API existe?](#por-que-esta-api-existe)
+- [Arquitetura da Solução](#arquitetura-da-solucao)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Endpoints](#endpoints)
+- [Estrutura do Modelo de Projeto](#estrutura-do-modelo-de-projeto)
+- [Como Executar o Projeto](#como-executar-o-projeto)
+- [Exemplo de Integração no Frontend](#exemplo-de-integracao-no-frontend)
 
-## Project setup
+---
 
-```bash
-$ npm install
+## Por que esta API existe?
+
+Anteriormente, tanto o projeto **Portfolio** quanto o projeto **Ozyris** mantinham arquivos JSON estáticos locais com a lista de projetos desenvolvidos. Essa abordagem trazia alguns problemas:
+1. **Redundância:** Toda vez que um novo site era criado, era necessário atualizar manualmente o arquivo JSON em ambos os projetos.
+2. **Duplicação de Assets:** As imagens/previews dos projetos precisavam estar salvas nas pastas públicas de cada site.
+3. **Inconsistência de Dados:** Risco de esquecer de atualizar um dos repositórios, gerando discrepâncias entre o portfólio pessoal e o site institucional.
+
+**Com a API Centralizada:**
+- **Sincronização Automática:** Qualquer alteração no backend é refletida instantaneamente em todos os sites conectados.
+- **Centralização de Mídia:** As imagens dos projetos ficam armazenadas no servidor da própria API (pasta `public/`), eliminando a necessidade de duplicar arquivos.
+- **Facilidade de Escala:** Se um terceiro site precisar exibir a lista de projetos no futuro, basta consumir a mesma API.
+
+---
+
+## Arquitetura da Solução
+
+O diagrama abaixo ilustra como a API interage com os frontends:
+
+```mermaid
+graph TD
+    API[api-portfolio <br> NestJS Backend]
+    
+    API -->|1. GET /projects| Port(Projeto Portfolio <br> Frontend React/HTML)
+    API -->|2. Servir Imagens estáticas <br> /img/projects/*| Port
+    
+    API -->|1. GET /projects| Ozy[Projeto Ozyris <br> Frontend React/HTML]
+    API -->|2. Servir Imagens estáticas <br> /img/projects/*| Ozy
+
+    style API fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    style Port fill:#efebe9,stroke:#4e342e,stroke-width:2px;
+    style Ozy fill:#efebe9,stroke:#4e342e,stroke-width:2px;
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## Tecnologias Utilizadas
 
-# watch mode
-$ npm run start:dev
+- **[NestJS](https://nestjs.com/)** - Framework progressivo de Node.js para construção de APIs eficientes e escaláveis.
+- **[TypeScript](https://www.typescriptlang.org/)** - Tipagem estática para maior segurança e produtividade.
+- **Serve Static Module** - Para servir as imagens dos projetos (`/public/img/projects/`) diretamente via rotas estáticas do servidor.
 
-# production mode
-$ npm run start:prod
+---
+
+## Endpoints
+
+### 1. Rota Raiz (Metadados)
+Retorna os metadados da aplicação, versão e as rotas disponíveis.
+* **URL:** `/`
+* **Método:** `GET`
+* **Resposta Exemplo:**
+```json
+{
+  "name": "Portfolio API",
+  "version": "1.0.0",
+  "author": "Luis Henrique",
+  "description": "API centralizadora de projetos para os sites portfolio e ozyris.",
+  "routes": {
+    "projects": "/projects"
+  }
+}
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### 2. Projetos
+Retorna a lista completa dos projetos cadastrados.
+* **URL:** `/projects`
+* **Método:** `GET`
+* **Resposta Exemplo:**
+```json
+[
+  {
+    "name": "Imports Manos",
+    "title": "Criação do site para loja virtual",
+    "image": "/img/projects/imports-manos.png",
+    "category": "Ozyris",
+    "date": "04/2026",
+    "href": "https://importsmanos.com.br/"
+  },
+  {
+    "name": "Banco do Brasil Asset",
+    "title": "Criação do site para fundos",
+    "image": "/img/projects/bbasset.png",
+    "category": "MZ Group",
+    "date": "01/2026",
+    "href": "https://www.bbasset.com.br/"
+  }
+]
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Estrutura do Modelo de Projeto
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Cada projeto retornado no array possui a seguinte estrutura:
 
+| Atributo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `name` | `string` | Nome do cliente ou empresa do projeto | `"Imports Manos"` |
+| `title` | `string` | Breve descrição da entrega ou escopo do trabalho | `"Criação do site para loja virtual"` |
+| `image` | `string` | URL relativa da imagem do projeto servida pela API | `"/img/projects/imports-manos.png"` |
+| `category` | `string` | Categoria ou marca sob a qual o projeto foi executado | `"Ozyris"` |
+| `date` | `string` | Mês e ano de conclusão | `"04/2026"` |
+| `href` | `string` | Link direto para o projeto no ar ou repositório | `"https://importsmanos.com.br/"` |
+
+> [!NOTE]
+> O caminho das imagens é **relativo**. No frontend consumidor, concatene a URL base da API com o valor retornado em `image` para renderizar a imagem corretamente. Exemplo: `https://sua-api.com/img/projects/imports-manos.png`.
+
+---
+
+## Como Executar o Projeto
+
+### Pré-requisitos
+* Node.js instalado (versão v18 ou superior recomendada)
+* Gerenciador de pacotes npm
+
+### Instalação
+Clone o repositório e instale as dependências:
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Inicialização
+```bash
+# Modo de desenvolvimento (recarregamento automático)
+npm run start:dev
 
-## Resources
+# Modo de produção
+npm run start:prod
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Executar Testes
+```bash
+# Testes unitários
+npm run test
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Testes de integração (E2E)
+npm run test:e2e
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Exemplo de Integração no Frontend
 
-## Stay in touch
+Veja abaixo um exemplo simples em JavaScript/TypeScript de como carregar os projetos no frontend e filtrar por categoria (ex: exibir apenas projetos com a categoria `Ozyris`):
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```typescript
+const API_URL = 'http://localhost:3000'; // Substitua pela URL da sua API
 
-## License
+interface Project {
+  name: string;
+  title: string;
+  image: string;
+  category: string;
+  date: string;
+  href: string;
+}
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+async function loadProjects() {
+  try {
+    const response = await fetch(`${API_URL}/projects`);
+    const projects: Project[] = await response.json();
+
+    // 1. Filtrar projetos que pertencem especificamente à categoria "Ozyris"
+    const ozyrisProjects = projects.filter(p => p.category === 'Ozyris');
+    
+    // 2. Renderizar ou utilizar os dados
+    ozyrisProjects.forEach(project => {
+      const fullImageUrl = `${API_URL}${project.image}`;
+      console.log(`Projeto: ${project.name} | Preview: ${fullImageUrl}`);
+    });
+  } catch (error) {
+    console.error('Erro ao buscar projetos:', error);
+  }
+}
+```
