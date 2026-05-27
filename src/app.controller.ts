@@ -20,7 +20,7 @@ export class AppController {
             version: '1.0.0',
             author: 'Luis Henrique',
             description:
-                'API centralizadora de projetos para os sites portfolio e ozyris.',
+                'API responsável por centralizar e disponibilizar os projetos utilizados nos sites Portfolio e Ozyris.',
             routes: {
                 projects: '/projects',
             },
