@@ -12,6 +12,7 @@ Esta API serve como uma **fonte única de verdade** (Single Source of Truth) par
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Endpoints](#endpoints)
 - [Estrutura do Modelo de Projeto](#estrutura-do-modelo-de-projeto)
+- [Estrutura do Modelo de Tecnologia](#estrutura-do-modelo-de-tecnologia)
 - [Como Executar o Projeto](#como-executar-o-projeto)
 - [Exemplo de Integração no Frontend](#exemplo-de-integracao-no-frontend)
 
@@ -72,9 +73,10 @@ Retorna os metadados da aplicação, versão e as rotas disponíveis.
   "name": "Portfolio API",
   "version": "1.0.0",
   "author": "Luis Henrique",
-  "description": "API centralizadora de projetos para os sites portfolio e ozyris.",
+  "description": "API responsável por centralizar e disponibilizar os projetos e tecnologias/cursos utilizados nos sites Portfolio e Ozyris.",
   "routes": {
-    "projects": "/projects"
+    "projects": "/projects",
+    "technologies": "/technologies"
   }
 }
 ```
@@ -105,6 +107,38 @@ Retorna a lista completa dos projetos cadastrados.
 ]
 ```
 
+### 3. Tecnologias / Cursos (Skills)
+Retorna a lista completa de competências técnicas, incluindo status de conclusão do aprendizado, certificados e repositórios de estudo.
+* **URL:** `/technologies`
+* **Método:** `GET`
+* **Resposta Exemplo:**
+```json
+[
+  {
+    "name": "JavaScript",
+    "category": "Front-end",
+    "icon": "FaJsSquare",
+    "completed": true,
+    "hide": false,
+    "completion_date": "2023-06-18",
+    "certificates": [
+      {
+        "name": "Certificado de Conclusão",
+        "link": "https://www.udemy.com/certificate/UC-d479fda3-61af-43f4-96b4-ba3de4357647/"
+      }
+    ],
+    "repositories": [
+      {
+        "name": "Curso 2023",
+        "link": "https://github.com/luisitcho/curso-javascript-otavio-2023",
+        "current": true,
+        "past": true
+      }
+    ]
+  }
+]
+```
+
 ---
 
 ## Estrutura do Modelo de Projeto
@@ -122,6 +156,26 @@ Cada projeto retornado no array possui a seguinte estrutura:
 
 > [!NOTE]
 > O caminho das imagens é **relativo**. No frontend consumidor, concatene a URL base da API com o valor retornado em `image` para renderizar a imagem corretamente. Exemplo: `https://sua-api.com/img/projects/imports-manos.png`.
+
+---
+
+## Estrutura do Modelo de Tecnologia
+
+Cada item retornado na rota `/technologies` possui a seguinte estrutura:
+
+| Atributo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `name` | `string` | Nome da tecnologia/competência | `"JavaScript"` |
+| `category` | `string` | Categoria de atuação (ex: `"Front-end"`, `"Back-end"`, `"DevOps"`, `"Ferramentas"`) | `"Front-end"` |
+| `icon` | `string` | Nome do ícone associado no pacote `react-icons` | `"FaJsSquare"` |
+| `completed` | `boolean` | Indica se o curso ou estudo principal foi concluído | `true` |
+| `hide` | `boolean` | Define se a tecnologia deve ser oculta no frontend | `false` |
+| `completion_date` | `string` (opcional) | Data de conclusão do estudo principal (AAAA-MM-DD) | `"2023-06-18"` |
+| `certificates` | `array` (opcional) | Lista de certificados contendo `name` e `link` | Ver exemplo acima |
+| `repositories` | `array` (opcional) | Lista de repositórios de estudo contendo `name`, `link`, `current` e `past` | Ver exemplo acima |
+
+> [!NOTE]
+> Os ícones são retornados como `string` (ex: `"FaJsSquare"`). No frontend React, você pode mapear essas strings para os componentes de ícones reais importados de `react-icons`.
 
 ---
 
