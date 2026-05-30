@@ -33,6 +33,14 @@ export class ProjectsController {
     getProjects(): ProjectDto[] {
         return [
             {
+                name: 'Portfolio API',
+                title: 'API centralizada para gestão de projetos e competências',
+                image: '/img/projects/api.png',
+                category: 'Projeto Pessoal',
+                date: '05/2026',
+                href: 'https://projeto-api-portfolio.vercel.app/',
+            },
+            {
                 name: 'Imports Manos',
                 title: 'Criação do site para loja virtual',
                 image: '/img/projects/imports-manos.png',
@@ -73,6 +81,22 @@ export class ProjectsController {
                 href: 'https://ri.caixa.gov.br/',
             },
             {
+                name: 'Chronos Pomodoro',
+                title: 'Projeto React: Chronos Pomodoro',
+                image: '/img/projects/chronos-pomodoro.png',
+                category: 'Projeto Pessoal',
+                date: '07/2025',
+                href: 'https://luisitcho-chronos-pomodoro.vercel.app/',
+            },
+            {
+                name: 'Buscador de CEP',
+                title: 'Projeto Python: Buscador de CEP',
+                image: '/img/projects/buscador-cep.png',
+                category: 'Projeto Pessoal',
+                date: '06/2025',
+                href: 'https://projeto-python-buscador-cep.onrender.com/',
+            },
+            {
                 name: 'DBLab Connect',
                 title: 'Criação do site Institucional',
                 image: '/img/projects/dblab.png',
@@ -87,6 +111,14 @@ export class ProjectsController {
                 category: 'HTML Brasil',
                 date: '04/2025',
                 href: 'https://artlifepintura.com.br/',
+            },
+            {
+                name: 'Dashboard Supermarket',
+                title: 'Projeto Python: Dashboard Supermarket',
+                image: '/img/projects/dashboard-supermarket.png',
+                category: 'Projeto Pessoal',
+                date: '03/2025',
+                href: 'https://github.com/luisitcho/projeto-python-dashboard-supermarket',
             },
             {
                 name: 'Cadiz',

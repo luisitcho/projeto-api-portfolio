@@ -33,6 +33,10 @@ export class AppController {
             author: 'Luis Henrique',
             description:
                 'API responsável por centralizar e disponibilizar os projetos e tecnologias/cursos utilizados nos sites Portfolio e Ozyris. A documentação interativa está disponível em /api.',
+            links: {
+                portfolio: 'https://luisitcho.com.br/',
+                ozyris: 'https://ozyris.com.br/',
+            },
             routes: {
                 projects: '/projects',
                 technologies: '/technologies',
